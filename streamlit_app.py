@@ -1,7 +1,7 @@
 import streamlit as st
 import sys
 
-# st.write('有給はどれくらい取得できますか')
+st.write('有給はどれくらい取得できますか')
 if "history" not in st.session_state:
     st.session_state["history"] = []
     st.session_state.history.append({"role":"user", "content": "こんにちは"})
