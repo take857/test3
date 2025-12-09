@@ -6,4 +6,3 @@ streamlit
 python-dotenv
 pandas
 sqlite3
-requests
