@@ -5,3 +5,6 @@ pypdf
 streamlit
 python-dotenv
 pandas
+requests
+sqlite3
+
