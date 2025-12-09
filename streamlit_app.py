@@ -11,10 +11,10 @@ def set_question(question):
     st.session_state.user_question = question
 
 def main():
-    st.title('Streamlit 質問テンプレート連携デモ')
+    st.title('質問デモ')
 
-    st.subheader('💡 よくある質問 (タップして質問を入力)')
-    st.write('以下のボタンを押すと、その質問内容が下の入力欄に自動で反映されます。')
+#    st.subheader('💡 よくある質問 (タップして質問を入力)')
+#    st.write('以下のボタンを押すと、その質問内容が下の入力欄に自動で反映されます。')
 
     faq_list = [
         "Q: このアプリは何ができますか？",
