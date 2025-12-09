@@ -4,7 +4,7 @@ import sys
 # st.write('有給はどれくらい取得できますか')
 if "history" not in st.session_state:
     st.session_state["history"] = []
-#    st.session_state.history.append({"role":"user", "content": "こんにちは"})
+    st.session_state.history.append({"role":"user", "content": "こんにちは"})
     st.session_state.history.append({"role":"assistant", "content": "何を手伝いましょうか"})
 
 
