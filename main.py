@@ -1,3 +1,7 @@
+import create_db
+create_db.create_db()
+
+
 import os
 from azure.search.documents import SearchClient
 from openai import AzureOpenAI
