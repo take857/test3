@@ -109,7 +109,7 @@ def search(history):
 
 # 画面を構築するためのコード
 if "history" not in st.session_state:
-    st.session_state["history"] = []
+    st.session_state["history"] = ["DBについて回答します。"]
 
 # チャット履歴を表示する
 for message in st.session_state.history:
