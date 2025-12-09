@@ -1,28 +1,23 @@
 import streamlit as st
 import sys
 
-st.write('有給はどれくらい取得できますか')
-if "history" not in st.session_state:
-    st.session_state["history"] = []
-    st.session_state.history.append({"role":"user", "content": "こんにちは"})
-    st.session_state.history.append({"role":"assistant", "content": "何を手伝いましょうか"})
+# 画面のタイトルを設定
+st.title('私のStreamlitアプリ')
 
+# ここに表示したい要素（ウィジェット）を追加します。
+# 例1: テキストの表示
+st.write('これはシンプルなテキストです。')
 
-# チャット履歴を表示する
-for message in st.session_state.history:
-    with st.chat_message(message["role"]):
-        st.write(message["content"])
+# 例2: ボタンの追加とその反応
+if st.button('押してみて'):
+    st.write('ボタンが押されました！')
 
-if prompt := st.chat_input("質問をどうぞ"):
-    st.session_state.history.append({"role": "user", "content": prompt})
-    with st.chat_message('user'):
-        st.write(prompt)
+# 例3: スライダーの追加
+age = st.slider('あなたの年齢', 0, 100, 25)
+st.write('あなたの年齢は', age, '歳です。')
 
-    st.session_state.history.append({"role": "assistant", "content": "はい"})
-    with st.chat_message('assistant'):
-        st.write('はい')
+# 例4: サイドバーの追加
+st.sidebar.header('設定')
+st.sidebar.text_input('ユーザー名', 'ゲスト')
 
-st.markdown(
-    f"<p>{st.session_state}</p>",
-    unsafe_allow_html=True
-)
+# などの要素を追加できます...
