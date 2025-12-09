@@ -5,4 +5,4 @@ pypdf
 streamlit
 python-dotenv
 pandas
-sqlite3
+sqlite3 
