@@ -318,6 +318,6 @@ if prompt := st.chat_input("質問を入力してください。"):
                 ai_response2 = response2.choices[0].message.content
                 st.write(ai_response, ai_response2, r)
 
-			except Exception as e:
+            except Exception as e:
                 st.error(f"OpenAI APIの呼び出し中にエラーが発生しました: {e}")
                 st.write("申し訳ありませんが、回答を生成できませんでした。")
