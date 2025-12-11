@@ -278,9 +278,9 @@ if prompt := st.chat_input("質問を入力してください。"):
                 ai_response = response.choices[0].message.content
                 conn = sqlite3.connect("Chinook.db")
                 r = conn.execute(ai_response)
-                r.fetchall()
+                r = r.fetchall()
                 # AIの回答を表示
-                st.write(ai_response + r.fetchall()[0])
+                st.write(ai_response, r)
                 
             except Exception as e:
                 st.error(f"OpenAI APIの呼び出し中にエラーが発生しました: {e}")
