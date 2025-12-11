@@ -280,8 +280,44 @@ if prompt := st.chat_input("質問を入力してください。"):
                 r = conn.execute(ai_response)
                 r = r.fetchall()
                 # AIの回答を表示
-                st.write(ai_response, r)
-                
-            except Exception as e:
+                prompt2 = """
+以下の【データ】に基づき、ユーザーの問い合わせに対する適切な回答を作成してください。
+
+回答を作成する際は、以下のステップとガイドラインに従ってください。
+
+### 回答作成のためのガイドライン
+
+1.  **目的の確認:** 【データ】内の「ユーザーの問い合わせ」の意図を正確に理解する。
+2.  **結果の分析:** 【データ】内の「実行されたSQL」と「SQLの返り値」を分析し、問いに答えるために必要な情報を抽出する。
+3.  **回答の構成:** SQLの返り値をそのまま表示するのではなく、ユーザーが**理解しやすい自然な言葉**（日本語）で結論や必要な情報を提示する。
+4.  **情報の明確化:** 必要に応じて、どのデータが何を示しているかを明確に伝える。
+
+---
+
+### 【データ】
+
+#### ユーザーの問い合わせ
+{question}
+
+
+#### 実行されたSQL
+{sql}
+
+#### SQLの実行結果
+{context}
+""".strip()
+                prompt2.format("question"=prompt, "sql"="ai_response, "context"=r)
+                response2 = client.chat.completions.create(
+                    model="gpt-5-nano",  # 使用するモデルを指定 (例: gpt-4, gpt-4o, gpt-3.5-turbo)
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": prompt}
+                    ],
+#                    temperature=0.7 # 応答のランダム性 (0.0〜2.0) gpt5では不使用
+                )
+                ai_response2 = response2.choices[0].message.content
+                st.write(ai_response, ai_response2, r)
+
+			except Exception as e:
                 st.error(f"OpenAI APIの呼び出し中にエラーが発生しました: {e}")
                 st.write("申し訳ありませんが、回答を生成できませんでした。")
