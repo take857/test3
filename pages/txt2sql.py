@@ -12,4 +12,5 @@ client = OpenAI(
 
 # 2. データベースのスキーマ定義
 # ここをあなたのデータベースに合わせて変更してください
-print('TEST')
+sql = "SELECT * FROM "
+st.write(sql)
