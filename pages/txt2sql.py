@@ -20,3 +20,5 @@ if prompt := st.chat_input("質問を入力してください。"):
     with st.chat_message("user"):
         st.write(prompt)
     
+    with st.chat_message("assistant"):
+        st.write(prompt + "ですね")
