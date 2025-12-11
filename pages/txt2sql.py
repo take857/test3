@@ -277,8 +277,8 @@ if prompt := st.chat_input("質問を入力してください。"):
                 # AIの回答を取得
                 ai_response = response.choices[0].message.content
                 conn = sqlite3.connect("Chinook.db")
-				r = conn.execute(ai_response)
-				r.fetchall()
+                r = conn.execute(ai_response)
+                r.fetchall()
                 # AIの回答を表示
                 st.write(ai_response, r.fetchall())
                 
