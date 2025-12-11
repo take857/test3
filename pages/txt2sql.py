@@ -270,7 +270,7 @@ if prompt := st.chat_input("質問を入力してください。"):
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": prompt}
                     ],
-                    temperature=0.7 # 応答のランダム性 (0.0〜2.0)
+#                    temperature=0.7 # 応答のランダム性 (0.0〜2.0) gpt5では不使用
                 )
                 
                 # AIの回答を取得
