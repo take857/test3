@@ -14,3 +14,11 @@ client = OpenAI(
 # ここをあなたのデータベースに合わせて変更してください
 sql = "SELECT * FROM "
 st.write(sql)
+# 画面を構築するためのコード
+# ユーザーが質問を入力した時の処理
+if prompt := st.chat_input("質問を入力してください。"):
+
+    # ユーザーが入力した質問を表示する
+    with st.chat_message("user"):
+        st.write(prompt)
+    
