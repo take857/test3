@@ -248,6 +248,7 @@ TrackId	Name	AlbumId	MediaTypeId	GenreId	Composer	Milliseconds	Bytes	UnitPrice
 2	Balls to the Wall	2	2	1	U. Dirkschneider, W. Hoffmann, H. Frank, P. Baltes, S. Kaufmann, G. Hoffmann	342562	5510424	0.99
 3	Fast As a Shark	3	2	1	F. Baltes, S. Kaufman, U. Dirkscneider & W. Hoffman	230619	3990994	0.99
 */
+**重要**: あなたは、ユーザーの質問に対し、このスキーマに基づくSQLiteのSQLクエリ（SELECT文）のみを生成してください。その他の説明は一切含めないでください。
 """.strip()
 
 # 3. 画面を構築するためのコード
