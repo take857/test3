@@ -306,12 +306,12 @@ if prompt := st.chat_input("質問を入力してください。"):
 #### SQLの実行結果
 {context}
 """.strip()
-                prompt2.format(question=prompt, sql=ai_response, context=r)
+                prompt2_formated = prompt2.format(question=prompt, sql=ai_response, context=r)
                 response2 = client.chat.completions.create(
                     model="gpt-5-nano",  # 使用するモデルを指定 (例: gpt-4, gpt-4o, gpt-3.5-turbo)
                     messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": prompt}
+                        {"role": "system", "content": "あなたは前のステップで与えられたデータ（ユーザーの問い合わせ、SQL、SQLの実行結果）に基づき、ユーザーが理解しやすい自然な日本語で回答を生成するAIです。SQLや技術的な詳細を直接表示せず、要点をまとめてください。"},
+                        {"role": "user", "content": prompt2_formated}
                     ],
 #                    temperature=0.7 # 応答のランダム性 (0.0〜2.0) gpt5では不使用
                 )
