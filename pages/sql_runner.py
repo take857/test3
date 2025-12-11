@@ -5,7 +5,7 @@ import os
 
 # --- 1. データベース接続の設定 ---
 
-DB_NAME = "../Chinook.db"
+DB_NAME = "Chinook.db"
 
 # @st.cache_resource は削除！
 def get_connection(db_name):
@@ -122,3 +122,4 @@ def sql_runner_page():
 
 # ページ処理を実行
 sql_runner_page()
+
