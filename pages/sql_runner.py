@@ -64,7 +64,7 @@ def sql_runner_page():
 
     # ユーザーがクエリを入力するためのテキストエリア
     # ... (変更なし) ...
-    default_query = "SELECT * FROM users"
+    default_query = "SELECT name FROM sqlite_master WHERE type='table'"
     sql_query = st.text_area(
         "実行したいSQLクエリを入力してください:",
         value=default_query,
@@ -122,4 +122,5 @@ def sql_runner_page():
 
 # ページ処理を実行
 sql_runner_page()
+
 
