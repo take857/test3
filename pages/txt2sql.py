@@ -306,7 +306,7 @@ if prompt := st.chat_input("質問を入力してください。"):
 #### SQLの実行結果
 {context}
 """.strip()
-                prompt2.format("question"=prompt, "sql"="ai_response, "context"=r)
+                prompt2.format(question=prompt, sql=ai_response, context=r)
                 response2 = client.chat.completions.create(
                     model="gpt-5-nano",  # 使用するモデルを指定 (例: gpt-4, gpt-4o, gpt-3.5-turbo)
                     messages=[
