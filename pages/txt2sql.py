@@ -1,7 +1,7 @@
 import os
 from openai import OpenAI
 import streamlit as st
-
+import sqlite3
 # StreamlitのシークレットからAPIキーを取得
 # secrets = st.secrets["OPENAI_API_KEY"] # 元の行。環境変数からの取得と併用しない場合はコメントアウトまたは削除。
 
@@ -276,9 +276,11 @@ if prompt := st.chat_input("質問を入力してください。"):
                 
                 # AIの回答を取得
                 ai_response = response.choices[0].message.content
-                
+                conn = sqlite3.connect("Chinook.db")
+				r = conn.execute(ai_response)
+				r.fetchall()
                 # AIの回答を表示
-                st.write(ai_response)
+                st.write(ai_response, r.fetchall())
                 
             except Exception as e:
                 st.error(f"OpenAI APIの呼び出し中にエラーが発生しました: {e}")
