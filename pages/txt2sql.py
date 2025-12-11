@@ -280,7 +280,7 @@ if prompt := st.chat_input("質問を入力してください。"):
                 r = conn.execute(ai_response)
                 r.fetchall()
                 # AIの回答を表示
-                st.write(ai_response, r.fetchall())
+                st.write(ai_response + r.fetchall())
                 
             except Exception as e:
                 st.error(f"OpenAI APIの呼び出し中にエラーが発生しました: {e}")
