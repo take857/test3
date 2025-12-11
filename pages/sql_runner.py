@@ -7,7 +7,7 @@ import os # データベースファイルの存在チェック用
 
 # データベースファイルをカレントディレクトリに置くか、
 # 必要に応じてパスを指定してください。
-DB_NAME = "Chinook.db" 
+DB_NAME = "../Chinook.db" 
 
 @st.cache_resource
 def get_connection(db_name):
@@ -117,3 +117,4 @@ def sql_runner_page():
 
 # ページ処理を実行
 sql_runner_page()
+
