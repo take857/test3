@@ -2,12 +2,13 @@ import os
 import sqlite3
 import streamlit as st
 from openai import OpenAI
+from datetime import datetime  # 追加: 日付操作用
 
 # ページ設定
 st.set_page_config(page_title="Marketing AI Analyst", layout="centered")
 
 # ==========================================
-# 0. アプリ概要の表示 (追加部分)
+# 0. アプリ概要の表示
 # ==========================================
 st.title("Marketing AI Analyst 📈")
 st.markdown("""
@@ -20,8 +21,7 @@ st.markdown("""
 **質問例:**
 * 「先月のGoogle広告のCPAはいくら？」
 * 「媒体ごとの獲得件数を比較して」
-* 「キャンペーンAからの予約数は？」
-""")
+* 「キャンペーンAからの予約数は？」""")
 st.divider()
 
 # ==========================================
@@ -42,8 +42,11 @@ if not api_key:
 client = OpenAI(api_key=api_key)
 
 # ==========================================
-# 2. プロンプト定義 (新スキーマ情報)
+# 2. プロンプト定義 (スキーマ情報 + 日付指示)
 # ==========================================
+
+# 今日の日付を取得 (YYYY-MM-DD形式)
+current_date = datetime.now().strftime("%Y-%m-%d")
 
 DB_SCHEMA_PROMPT = """
 あなたは経験豊富なマーケティングデータアナリストです。
@@ -71,19 +74,22 @@ CREATE TABLE "CustomerAcquisition" (
     "y_junin" INTEGER     -- 受任(成約)数
 );
 
-**重要**: 
-- 日付は 'YYYY-MM-DD' 形式の文字列として格納されています。期間集計には `WHERE date BETWEEN '2023-12-01' AND '2023-12-31'` のような形式を使用してください。
-- CPA（獲得単価）を計算する場合は `SUM(cost) / NULLIF(SUM(conversions), 0)` としてください。
-- ユーザーの質問に対し、このスキーマに基づくSQLiteのSQLクエリ（SELECT文）のみを生成してください。Markdownや説明は含めないでください。
+**重要ルール**:
+1. 日付カラム `date` は 'YYYY-MM-DD' 文字列形式です。
+2. **日付計算**: 「今日」「先月」「直近30日」などの指示があった場合は、後述する【現在の日付】を基準にSQLの `WHERE` 句を作成してください。
+   - 例（先月）: `WHERE date BETWEEN date('now', 'start of month', '-1 month') AND date('now', 'start of month', '-1 day')` ※SQLite関数を使用、または文字列比較で範囲指定を行ってください。
+   - SQLiteでは `strftime` や文字列比較が有効です。例: `date LIKE '2023-11%'`
+3. CPA（獲得単価）の計算: `SUM(cost) / NULLIF(SUM(conversions), 0)`
+4. 出力: 説明なしで、実行可能なSQLクエリ（SELECT文）のみを返してください。
 """.strip()
 
 RESPONSE_GENERATION_PROMPT_TEMPLATE = """
 以下の【データ】に基づき、ユーザーの問い合わせに対する適切な回答を作成してください。
 
 回答作成のガイドライン:
-1. **目的の確認:** ユーザーの質問意図（例: コスト削減分析、効果測定など）を理解する。
+1. **目的の確認:** ユーザーの質問意図を理解する。
 2. **結果の分析:** SQL実行結果から数値を読み取り、増減や傾向を分析する。
-3. **回答の構成:** 単に数値を並べるだけでなく、「Googleの方がCPAが安価です」といった洞察（インサイト）を含めて日本語で回答する。
+3. **回答の構成:** 「現在の日付（{current_date}）時点でのデータによると...」のように、いつの時点の情報かを意識して回答する。
 
 ---
 ### 【データ】
@@ -112,12 +118,16 @@ if user_input := st.chat_input("質問を入力してください（例：先月
         # --- Phase 1: SQL生成 ---
         with st.spinner("データを分析中..."):
             try:
+                # APIに「今日の日付」を伝えるメッセージを追加
+                messages_for_sql = [
+                    {"role": "system", "content": DB_SCHEMA_PROMPT},
+                    {"role": "system", "content": f"【システム情報】現在の日付は {current_date} です。ユーザーが「今月」や「先月」と言った場合、この日付を基準にしてください。"},
+                    {"role": "user", "content": user_input}
+                ]
+
                 sql_response = client.chat.completions.create(
                     model="gpt-4o", 
-                    messages=[
-                        {"role": "system", "content": DB_SCHEMA_PROMPT},
-                        {"role": "user", "content": user_input}
-                    ],
+                    messages=messages_for_sql,
                 )
                 generated_sql = sql_response.choices[0].message.content
                 
@@ -125,10 +135,10 @@ if user_input := st.chat_input("質問を入力してください（例：先月
                 generated_sql = generated_sql.replace("```sql", "").replace("```", "").strip()
 
                 # --- Phase 2: SQL実行 ---
-                db_path = "marketing.db" # 作成したDBファイル名
+                db_path = "marketing.db"
                 
                 if not os.path.exists(db_path):
-                    st.error(f"データベース '{db_path}' が見つかりません。ステップ1のスクリプトを実行してください。")
+                    st.error(f"データベース '{db_path}' が見つかりません。DB作成スクリプトを実行してください。")
                     st.stop()
 
                 with sqlite3.connect(db_path) as conn:
@@ -136,14 +146,14 @@ if user_input := st.chat_input("質問を入力してください（例：先月
                     columns = [description[0] for description in cursor.description]
                     query_results = cursor.fetchall()
                     
-                    # 結果が見やすいようにリスト形式にラベル付け（デバッグ用・AI用）
                     formatted_results = [dict(zip(columns, row)) for row in query_results]
 
                 # --- Phase 3: 自然言語での回答生成 ---
                 final_prompt = RESPONSE_GENERATION_PROMPT_TEMPLATE.format(
                     question=user_input,
                     sql=generated_sql,
-                    context=str(formatted_results) # 辞書形式で渡すとAIが理解しやすい
+                    context=str(formatted_results),
+                    current_date=current_date # テンプレートにも日付を渡す
                 )
 
                 final_response = client.chat.completions.create(
@@ -159,7 +169,7 @@ if user_input := st.chat_input("質問を入力してください（例：先月
                 st.write(natural_language_answer)
                 
                 # デバッグ用情報
-                with st.expander("詳細データを見る（SQLと検索結果）"):
+                with st.expander(f"詳細データ（基準日: {current_date}）"):
                     st.code(generated_sql, language="sql")
                     st.write("検索結果:", formatted_results)
 
