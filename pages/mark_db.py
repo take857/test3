@@ -68,7 +68,7 @@ CREATE TABLE "CustomerAcquisition" (
     "date" TEXT,          -- 日付 (YYYY-MM-DD)
     "utm_medium" TEXT,    -- 媒体 (cpc, organic, snsなど)
     "utm_source" TEXT,    -- ソース (google, yahoo, instagramなど)
-    "utm_campaign" TEXT,  -- キャンペーン名
+    "utm_campaign" TEXT,  -- キャンペーン名（CampaignA, CampaignBなど）
     "y_new" INTEGER,      -- 新規リード数
     "y_yoyaku" INTEGER,   -- 予約数
     "y_junin" INTEGER     -- 受任(成約)数
